@@ -1,0 +1,11 @@
+{
+  "name": "datz",
+  "version": "0.1.0",
+  "author": {
+    "name": "Yuri Neves Silveira",
+    "email": "npm@yneves.com"
+  },
+  "dependencies": {
+    "mocha": "^2.2.0"
+  }
+}
