@@ -16,24 +16,68 @@ var index = require("../index.js");
 describe("collection",function() {
 
   it("createCollection",function() {
-    
     var Collection = index.createCollection({
-      
     });
-    
     var collection = new Collection([
       { id: 1 },
       { id: 2 },
     ]);
-    
     assert.ok(index.isCollection(collection));
     assert.strictEqual(collection.length,2);
     assert.deepEqual(collection[0],{ id: 1 });
     assert.deepEqual(collection[1],{ id: 2 });
-    
   });
 
+  it("add event",function() {
+    var Collection = index.createCollection({
+    });
+    var collection = new Collection();
+    var fired = 0;
+    collection.on("add",function(added) {
+      fired = added.length;
+    });    
+    assert.strictEqual(collection.length,0);
+    collection.push({ id: 1 },{ id: 2 });
+    assert.strictEqual(collection.length,2);
+    assert.strictEqual(fired,2);
+  });
   
+  it("remove event",function() {
+    var Collection = index.createCollection({
+    });
+    var collection = new Collection([
+      { id: 1 },
+      { id: 2 },
+    ]);
+    var fired = 0;
+    collection.on("remove",function(removed) {
+      fired = removed.length;
+    });    
+    assert.strictEqual(collection.length,2);
+    collection.splice(0,2);
+    assert.strictEqual(collection.length,0);
+    assert.strictEqual(fired,2);
+  });
+  
+  it("add and remove event",function() {
+    var Collection = index.createCollection({
+    });
+    var collection = new Collection([
+      { id: 1 },
+      { id: 2 },
+    ]);
+    var fired = 0;
+    collection.on("add",function(added) {
+      fired += added.length;
+    });    
+    collection.on("remove",function(removed) {
+      fired += removed.length;
+    });    
+    assert.strictEqual(collection.length,2);
+    collection.splice(0,2,{ id: 1 },{ id: 2 });
+    assert.strictEqual(collection.length,2);
+    assert.strictEqual(fired,4);
+  });
 
 });
 

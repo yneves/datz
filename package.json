@@ -6,6 +6,7 @@
     "email": "npm@yneves.com"
   },
   "dependencies": {
+    "bluebird": "^2.9.13",
     "mocha": "^2.2.0"
   }
 }
