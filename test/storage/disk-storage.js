@@ -22,12 +22,17 @@ var DiskStorage = datz.createStorage({
   insert: function(job) {
     return new datz.Promise(function(resolve,reject) {
       var dir = path.resolve(__dirname,"data");
-      var file = path.resolve(dir,job.id);
-      var content = JSON.stringify(job,null,2);
+      var id = "_" + Math.random().toString().replace(/\./,"");
+      var file = path.resolve(dir,id);
+      var data = job.model.toJSON();
+      data._id = id;
+      data._index = job.index;
+      var content = JSON.stringify(data,null,2);
       fs.writeFile(file,content,function(error) {
         if (error) {
           reject(error);
         } else {
+          job.model._id = id;
           resolve();
         }
       });
@@ -38,8 +43,11 @@ var DiskStorage = datz.createStorage({
   update: function(job) {
     return new datz.Promise(function(resolve,reject) {
       var dir = path.resolve(__dirname,"data");
-      var file = path.resolve(dir,job.id);
-      var content = JSON.stringify(job,null,2);
+      var file = path.resolve(dir,job.model._id);
+      var data = job.model.toJSON();
+      data._id = job.model._id;
+      data._index = job.index;
+      var content = JSON.stringify(data,null,2);
       fs.writeFile(file,content,function(error) {
         if (error) {
           reject(error);
@@ -54,7 +62,7 @@ var DiskStorage = datz.createStorage({
   delete: function(job) {
     return new datz.Promise(function(resolve,reject) {
       var dir = path.resolve(__dirname,"data");
-      var file = path.resolve(dir,job.id);
+      var file = path.resolve(dir,job.model._id);
       fs.unlink(file,function(error) {
         if (error) {
           reject(error);
@@ -84,9 +92,9 @@ var DiskStorage = datz.createStorage({
                 items.push(JSON.parse(content));
                 if (items.length === files.length) {
                   items.sort(function(a,b) {
-                    if (a.index < b.index) {
+                    if (a._index < b._index) {
                       return -1;
-                    } else if (a.index > b.index) {
+                    } else if (a._index > b._index) {
                       return 1;
                     } else {
                       return 0;

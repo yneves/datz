@@ -61,10 +61,10 @@ describe("storage",function() {
       collection.push(collection.createItem({a:3}));
       setTimeout(function() {
         assert.strictEqual(fs.readdirSync(data).length,3);
-        assert.strictEqual(JSON.parse(fs.readFileSync(path.resolve(data,collection[0]._id),"utf8")).data.a,1);
+        assert.strictEqual(JSON.parse(fs.readFileSync(path.resolve(data,collection[0]._id),"utf8")).a,1);
         collection[0].a = 2;
         setTimeout(function() {
-          assert.strictEqual(JSON.parse(fs.readFileSync(path.resolve(data,collection[0]._id),"utf8")).data.a,2);
+          assert.strictEqual(JSON.parse(fs.readFileSync(path.resolve(data,collection[0]._id),"utf8")).a,2);
           var copyCollection = new Collection();
           var copyStorage = new DiskStorage(copyCollection);
           copyStorage.start(function() {
@@ -73,10 +73,10 @@ describe("storage",function() {
             setTimeout(function() {
               assert.strictEqual(fs.readdirSync(data).length,0);
               done();
-            },100);
+            },300);
           });
-        },100);
-      },100);
+        },300);
+      },300);
     });
   });
 
